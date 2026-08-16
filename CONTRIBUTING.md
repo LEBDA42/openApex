@@ -22,6 +22,13 @@ read a sports-science paper and write 50 lines of Python, you can contribute a m
 3. Add tests in `tests/test_your_metric.py`.
 4. `pip install -e ".[dev]" && pytest && ruff check && mypy`
 
+## Repo etiquette
+
+- Commit subjects in the imperative; the body explains *why*, not *what*.
+- All three checks green before every commit: `ruff check src tests`, `mypy`,
+  `pytest`. CI enforces them on push.
+- History is append-only: never force-push.
+
 ## Not sure where to start?
 
 Issues labeled `good-first-metric` list formulas with their sources, waiting for an
