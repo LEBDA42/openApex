@@ -1,11 +1,9 @@
 # CLAUDE.md — OpenApex
 
-Source of truth for coding agents and contributors. Facts here are always true;
-procedures live in the skills listed at the bottom and load on demand.
 
 ## What this is & why
 
-OpenApex is a Python **library** (not a platform, not a service): open,
+OpenApex is a Python **library** : open,
 documented training metrics for endurance sports. Strategy: be the analytical
 brick that self-hosted fitness platforms (Endurain first) and AI agents embed.
 Three things are therefore the product itself: **trust** (verifiable, cited
@@ -56,26 +54,32 @@ All three gates green before every commit. CI enforces them on push.
   `MissingProfileData`.
 - Guard every `dt`: `dt <= 0` → skip; `dt > 60 s` → recording pause, skip.
 
-## Hard rules
+## Hard rules — each points to its rationale in `.claude/rules/`
 
-- Every metric cites its published source (author, year, title, pages) in the
-  class docstring. No citation, no merge.
-- Banned: trademarked or reverse-engineered proprietary formulas (TSS®, NP®,
-  IF®, rTSS, hrTSS, Stryd/WKO models). Open lineage only (Banister, Foster,
-  Critical Power…).
-- Never copy GPL/AGPL code — GoldenCheetah is GPL-2.0: read the papers it
-  cites, never its source. The project is Apache-2.0 and stays license-clean.
-- Stdlib-first: no numpy/pandas until an issue decides a metric needs them.
+Rules auto-load when you touch matching files; read the rule file for the why
+and the do/don't examples before working around any of them.
+
+- Every metric cites its published source. → `.claude/rules/cited-sources.md`
+- Open lineage only; trademarked/proprietary formulas (TSS®, NP®, IF®…) are
+  banned. → `.claude/rules/open-formulas.md`
+- Never copy GPL/AGPL code (GoldenCheetah is GPL-2.0). →
+  `.claude/rules/license-hygiene.md`
+- Stdlib-first; `fitdecode` is the only runtime dependency. →
+  `.claude/rules/dependencies.md`
 - Public API = `openapex/__init__.py` exports + the `Metric` contract +
   `metrics.available()/get()`. Pre-1.0 breaking changes allowed but stated in
   the commit body.
 
 ## Agent toolbox — where each truth lives
 
-| Outil | Rôle | Quand |
+| Tool | Carries | When it activates |
 |---|---|---|
-| Skill `/new-metric` (`.claude/skills/new-metric/`) | Doctrine complète de développement d'une métrique : papier d'abord, test en forme fermée avant le code, les 4 gardes, entry point, checklist de tests | Toute création/refonte sous `src/openapex/metrics/` |
-| Skill `/release` (`.claude/skills/release/`) | Vérité de publication : versionnage, tag, pipeline trusted publishing, identité mainteneur | Release uniquement — déclenchement humain (`disable-model-invocation`) |
-| Hook `block_force_push` (`.claude/hooks/`, câblé dans `.claude/settings.json`) | Historique append-only appliqué déterministiquement : tout `git push --force` est bloqué | Automatique, chaque commande Bash |
-| `CONTRIBUTING.md` | Processus humain : étiquette de commit, checklist PR | Contributeurs |
-| `docs/ROADMAP.md` | Feuille de route hiérarchisée | Choix du prochain chantier |
+| Rules `.claude/rules/*.md` | One rule each: statement, rationale, do/don't examples | Auto-loaded when touching files matching their `paths` globs |
+| Skill `/new-metric` | Full metric-development doctrine: paper first, closed-form test before code, the four guards, entry point, test checklist | Any creation or rework under `src/openapex/metrics/` |
+| Skill `/release` | Publishing truth: versioning, tagging, trusted-publishing pipeline, maintainer identity | Releases only — human-invoked (`disable-model-invocation`) |
+| Skill `/fix-issue` | Issue workflow: reproduce with a failing test, fix, gates, review, commit | Human-invoked with an issue number |
+| Agent `code-reviewer` | Diff review: dependency direction, guards, typing, API surface, test coverage | Ask for it after writing code, before committing |
+| Agent `science-reviewer` | Sports-science integrity: citation completeness, formula fidelity, banned names, coefficient provenance | Ask for it on any metric change |
+| Hook `block_force_push` (`.claude/settings.json`) | Append-only history, enforced deterministically | Automatic, every Bash command |
+| `CONTRIBUTING.md` | Human process: commit etiquette, PR checklist | Contributors |
+| `docs/ROADMAP.md` | Prioritized roadmap | Choosing the next work item |
