@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openapex"
+version = "0.1.0.dev0"
+description = "Open training-intelligence engine for endurance sports: parse activity files, compute documented training-load metrics, model fitness/fatigue/form."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+authors = [{ name = "OpenApex contributors" }]
+keywords = ["cycling", "running", "triathlon", "training-load", "fit", "endurance", "trimp", "sports-science"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Typing :: Typed",
+]
+dependencies = [
+    "fitdecode>=0.10",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.5",
+    "mypy>=1.10",
+]
+
+[project.urls]
+Homepage = "https://github.com/LEBDA42/openApex"
+
+# Third-party packages register additional metrics here:
+# a `openapex.metrics` entry point must resolve to a Metric subclass.
+[project.entry-points."openapex.metrics"]
+trimp = "openapex.metrics.trimp:Trimp"
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.mypy]
+strict = true
+packages = ["openapex"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = "fitdecode.*"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
